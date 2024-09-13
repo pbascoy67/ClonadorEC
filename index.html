@@ -16,7 +16,7 @@
             align-items: center;
             flex-direction: row; /* Secciones lado a lado */
             min-height: 100vh;
-            position: relative;
+            position: relative; /* Necesario para el posicionamiento del logo */
         }
         h1, h2 {
             color: #f5d042; /* Dorado */
@@ -41,7 +41,7 @@
         .logo {
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 20px; /* Posicionarlo en la esquina superior derecha */
             width: 100px; /* Tamaño del logo */
             height: auto;
         }
@@ -140,7 +140,7 @@
 </head>
 <body>
 
-    <!-- Agregar el logo en la esquina superior izquierda -->
+    <!-- Agregar el logo en la esquina superior derecha -->
     <img src="logo.jpg" alt="Logo" class="logo">
 
     <!-- Sección de portlets a la izquierda -->
