@@ -4,69 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clonador de legajos de Empleado Central</title>
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Fuente Roboto -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-xxxxxx" crossorigin="anonymous">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 10px 20px 20px 20px; /* Reducir padding-top a 10px */
+            padding: 10px 20px 20px 20px;
             background-color: #001f4d; /* Azul más oscuro */
-            color: #fff;
+            color: #fff; /* Texto blanco */
             min-height: 100vh;
             position: relative;
         }
         h1, h2 {
-            color: #f5d042; /* Dorado */
+            color: #fff;
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin: 0;
         }
         .main-container {
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            align-items: flex-start; /* Alinear elementos al inicio */
+            align-items: flex-start;
         }
         .container, .portlets {
-            background: #001f4d; /* Azul más oscuro para ambas secciones */
+            background: #001f4d; /* Azul más oscuro */
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            margin: 0 10px 10px 10px; /* Eliminar margen superior */
+            margin: 10px;
+            flex: 1;
+            box-sizing: border-box;
+            border: 2px solid #f5d042; /* Borde dorado */
         }
         .container {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Alinear contenido al inicio */
-        }
-        .portlets {
-            flex: 1;
         }
         /* Caja para títulos con borde dorado */
         .title-box {
-            border: 2px solid #f5d042;
-            padding: 10px;
+            border: 2px solid #f5d042; /* Borde dorado */
             border-radius: 8px;
+            padding: 10px;
             margin-bottom: 20px;
-            margin-top: 0; /* Asegurar que no haya margen superior */
+            background-color: #002966; /* Azul ligeramente más claro */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .title-box i {
+            margin-right: 10px;
+            color: #f5d042; /* Dorado */
         }
         label {
             font-weight: bold;
             display: block;
             margin-top: 15px;
-            color: #fff; /* Texto blanco */
+            color: #fff;
         }
         input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 5px;
             border-radius: 8px;
-            border: 2px solid #f5d042;
-            background-color: #1a1a1a; /* Fondo oscuro para inputs */
+            border: 2px solid #f5d042; /* Borde dorado */
+            background-color: #1a1a1a;
             color: #fff;
             font-size: 1rem;
+            box-sizing: border-box;
         }
         input::placeholder {
             color: #cfcfcf;
@@ -76,10 +89,10 @@
             width: 100%;
             padding: 12px;
             background-color: #f5d042; /* Dorado */
-            color: #1a1a1a; /* Texto oscuro */
+            color: #1a1a1a;
             border: none;
             border-radius: 8px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -90,35 +103,40 @@
             margin-top: 20px;
             padding: 10px;
             background-color: #1a1a1a;
-            border: 2px solid #f5d042;
+            border-left: 5px solid #f5d042; /* Borde dorado */
             border-radius: 8px;
-            text-align: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #fff;
         }
         .status.error {
-            background-color: #d9534f; /* Fondo rojo en caso de error */
+            background-color: #d9534f;
         }
         .status.success {
-            background-color: #5cb85c; /* Fondo verde en caso de éxito */
+            background-color: #5cb85c;
         }
         /* Estilo para la sección de portlets */
         .portlets label {
             font-weight: normal;
-            color: #fff; /* Texto blanco */
+            color: #fff;
             display: inline-block;
             margin-bottom: 10px;
+            cursor: pointer;
         }
         .portlets input[type="checkbox"] {
             margin-right: 10px;
             display: inline-block;
+            cursor: pointer;
         }
         /* Grid para los portlets */
         .portlet-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            grid-gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
             margin-top: 20px;
+        }
+        .portlet-grid div {
+            width: calc(50% - 10px);
+            margin: 5px;
+            box-sizing: border-box;
         }
         /* Botón para seleccionar/deseleccionar todos */
         .select-buttons {
@@ -137,10 +155,10 @@
             border-radius: 8px;
             overflow: hidden;
             margin-top: 20px;
-            border: 2px solid #f5d042;
+            border: 2px solid #f5d042; /* Borde dorado */
         }
         .progress {
-            height: 20px;
+            height: 10px;
             background-color: #5cb85c;
             width: 0%;
             transition: width 0.3s ease;
@@ -152,27 +170,37 @@
             max-width: 1200px;
             padding: 20px;
             background-color: #001f4d;
-            border: 2px solid #f5d042;
             border-radius: 12px;
             color: #fff;
-            margin-top: 20px;
-            white-space: pre-line; /* Para respetar saltos de línea en el log */
+            margin: 20px auto;
+            white-space: pre-line;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
+            border: 2px solid #f5d042; /* Borde dorado */
         }
         /* Título del log */
         .log-title {
             font-size: 1.5rem;
-            border: 2px solid #f5d042;
-            padding: 10px;
+            border: 2px solid #f5d042; /* Borde dorado */
             border-radius: 8px;
+            padding: 10px;
             margin-bottom: 10px;
+            background-color: #002966;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .log-title i {
+            margin-right: 10px;
+            color: #f5d042; /* Dorado */
         }
         /* Estilo para el logo */
         .logo-container {
             text-align: right;
-            margin-bottom: 10px; /* Reducir margen inferior */
+            margin-bottom: 10px;
         }
         .logo-image {
-            width: 150px;
+            width: 100px; /* Tamaño reducido del logo */
             height: auto;
         }
         /* Responsividad */
@@ -181,12 +209,15 @@
                 flex-direction: column;
             }
             .logo-image {
-                width: 120px;
+                width: 80px;
+            }
+            .portlet-grid div {
+                width: calc(100% - 10px);
             }
         }
         @media screen and (max-width: 500px) {
             .logo-image {
-                width: 100px;
+                width: 60px;
             }
         }
     </style>
@@ -201,13 +232,14 @@
         <!-- Sección de portlets -->
         <div class="portlets">
             <div class="title-box">
+                <i class="fas fa-clone"></i>
                 <h2>Seleccione los portlets a clonar</h2>
             </div>
 
             <!-- Botones para seleccionar/deseleccionar todos -->
             <div class="select-buttons">
-                <button onclick="selectAllPortlets()">Seleccionar todos</button>
-                <button onclick="deselectAllPortlets()">Deseleccionar todos</button>
+                <button onclick="selectAllPortlets()"><i class="fas fa-check-square"></i> Seleccionar todos</button>
+                <button onclick="deselectAllPortlets()"><i class="fas fa-square"></i> Deseleccionar todos</button>
             </div>
 
             <div class="portlet-grid">
@@ -271,33 +303,37 @@
         <!-- Sección de clonador de legajos -->
         <div class="container">
             <div class="title-box">
+                <i class="fas fa-user-plus"></i>
                 <h1>Clonador de legajos</h1>
             </div>
 
             <div id="connectionSection">
-                <label for="produccion">Ambiente Origen (Producción):</label>
-                <input type="text" id="produccion" placeholder="URL API Producción" value="https://api.production.com/odata/v2/Employee">
+                <fieldset>
+                    <legend><i class="fas fa-plug"></i> Configuración de Conexión</legend>
 
-                <label for="produccionToken">Token de Producción:</label>
-                <input type="password" id="produccionToken" placeholder="Ingrese su token de Producción">
+                    <label for="produccion">Ambiente Origen (Producción):</label>
+                    <input type="text" id="produccion" placeholder="URL API Producción" value="https://api.production.com/odata/v2/Employee">
 
-                <label for="preview">Ambiente Destino (Preview):</label>
-                <input type="text" id="preview" placeholder="URL API Preview" value="https://api.preview.com/odata/v2/Employee">
+                    <label for="produccionToken">Token de Producción:</label>
+                    <input type="password" id="produccionToken" placeholder="Ingrese su token de Producción">
 
-                <label for="previewToken">Token de Preview:</label>
-                <input type="password" id="previewToken" placeholder="Ingrese su token de Preview">
+                    <label for="preview">Ambiente Destino (Preview):</label>
+                    <input type="text" id="preview" placeholder="URL API Preview" value="https://api.preview.com/odata/v2/Employee">
 
-                <button onclick="saveConnection()">Guardar Conexión</button>
+                    <label for="previewToken">Token de Preview:</label>
+                    <input type="password" id="previewToken" placeholder="Ingrese su token de Preview">
+
+                    <button onclick="saveConnection()"><i class="fas fa-save"></i> Guardar Conexión</button>
+                </fieldset>
             </div>
 
             <div id="mainSection" style="display: none;">
-                <button onclick="reviewConnection()">Revisar Conexión</button>
+                <button onclick="reviewConnection()"><i class="fas fa-edit"></i> Revisar Conexión</button>
 
                 <label for="employeeId">ID de empleado a clonar:</label>
                 <input type="text" id="employeeId" placeholder="Ingrese el ID de empleado">
 
-                <button onclick="cloneEmployee()">Clonar Empleado</button>
-                <button onclick="showLog()">Revisar log</button>
+                <button onclick="cloneEmployee()"><i class="fas fa-copy"></i> Clonar Empleado</button>
 
                 <!-- Indicador de progreso -->
                 <div class="progress-bar" id="progressBar">
@@ -311,7 +347,10 @@
 
     <!-- Sección del log -->
     <div id="logSection" class="log-section">
-        <div class="log-title">Log detallado</div>
+        <div class="log-title">
+            <i class="fas fa-file-alt"></i>
+            Log detallado
+        </div>
         <pre id="logContent"></pre>
     </div>
 
@@ -337,13 +376,13 @@
             });
         }
 
-        // Función para mostrar el log y desplazar la página hacia él
+        // Función para mostrar el log y desplazar la pantalla suavemente
         function showLog() {
             const logSection = document.getElementById('logSection');
             const logContent = document.getElementById('logContent');
             logContent.textContent = log.join('\n'); // Mostrar el log en la sección de log
             logSection.style.display = 'block'; // Mostrar el recuadro del log
-            logSection.scrollIntoView({ behavior: 'smooth' }); // Desplazar hacia el log
+            logSection.scrollIntoView({ behavior: 'smooth' }); // Desplazar suavemente hacia el log
         }
 
         // Función para actualizar el progreso
@@ -415,7 +454,7 @@
                 log.push('Error: Datos de conexión incompletos.');
                 statusDiv.innerHTML = "Por favor, configure la conexión antes de clonar.";
                 statusDiv.className = 'status error';
-                log.push('Sugerencia: Haga clic en "Revisar Conexión" para ingresar los datos.');
+                log.push('Sugerencia: Haga clic en \"Revisar Conexión\" para ingresar los datos.');
                 showLog();
                 return;
             }
