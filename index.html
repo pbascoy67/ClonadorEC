@@ -8,15 +8,11 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #0033a0; /* Azul Francia */
+            padding: 10px 20px 20px 20px; /* Reducir padding-top a 10px */
+            background-color: #001f4d; /* Azul más oscuro */
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: row; /* Secciones lado a lado */
             min-height: 100vh;
-            position: relative; /* Necesario para el posicionamiento del logo */
+            position: relative;
         }
         h1, h2 {
             color: #f5d042; /* Dorado */
@@ -24,26 +20,29 @@
             font-size: 2rem;
             margin: 0;
         }
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start; /* Alinear elementos al inicio */
+        }
         .container, .portlets {
-            width: 45%;
-            background: #0033a0; /* Azul Francia para ambas secciones */
-            padding: 30px;
+            background: #001f4d; /* Azul más oscuro para ambas secciones */
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            margin: 10px;
+            margin: 0 10px 10px 10px; /* Eliminar margen superior */
         }
         .container {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Alinear contenido al inicio */
         }
-        /* Estilo del logo */
-        .logo {
-            position: absolute;
-            top: 20px;
-            right: 20px; /* Posicionarlo en la esquina superior derecha */
-            width: 100px; /* Tamaño del logo */
-            height: auto;
+        .portlets {
+            flex: 1;
         }
         /* Caja para títulos con borde dorado */
         .title-box {
@@ -51,6 +50,7 @@
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 20px;
+            margin-top: 0; /* Asegurar que no haya margen superior */
         }
         label {
             font-weight: bold;
@@ -58,7 +58,7 @@
             margin-top: 15px;
             color: #fff; /* Texto blanco */
         }
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -103,25 +103,55 @@
             background-color: #5cb85c; /* Fondo verde en caso de éxito */
         }
         /* Estilo para la sección de portlets */
-        .portlets {
-            padding: 20px;
-            border: 2px solid #f5d042;
-        }
         .portlets label {
             font-weight: normal;
             color: #fff; /* Texto blanco */
             display: inline-block;
+            margin-bottom: 10px;
         }
         .portlets input[type="checkbox"] {
             margin-right: 10px;
             display: inline-block;
         }
+        /* Grid para los portlets */
+        .portlet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 15px;
+            margin-top: 20px;
+        }
+        /* Botón para seleccionar/deseleccionar todos */
+        .select-buttons {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .select-buttons button {
+            width: auto;
+            margin: 5px;
+            padding: 10px 20px;
+        }
+        /* Indicador de progreso */
+        .progress-bar {
+            width: 100%;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 2px solid #f5d042;
+        }
+        .progress {
+            height: 20px;
+            background-color: #5cb85c;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
         /* Caja del log */
         .log-section {
             display: none;
             width: 100%;
+            max-width: 1200px;
             padding: 20px;
-            background-color: #0033a0;
+            background-color: #001f4d;
             border: 2px solid #f5d042;
             border-radius: 12px;
             color: #fff;
@@ -136,104 +166,257 @@
             border-radius: 8px;
             margin-bottom: 10px;
         }
+        /* Estilo para el logo */
+        .logo-container {
+            text-align: right;
+            margin-bottom: 10px; /* Reducir margen inferior */
+        }
+        .logo-image {
+            width: 150px;
+            height: auto;
+        }
+        /* Responsividad */
+        @media screen and (max-width: 800px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .logo-image {
+                width: 120px;
+            }
+        }
+        @media screen and (max-width: 500px) {
+            .logo-image {
+                width: 100px;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <!-- Agregar el logo en la esquina superior derecha -->
-    <img src="logo.jpg" alt="Logo" class="logo">
-
-    <!-- Sección de portlets a la izquierda -->
-    <div class="portlets">
-        <div class="title-box">
-            <h2>Seleccione los portlets a clonar</h2>
-        </div>
-        <div>
-            <input type="checkbox" id="personalInfo" value="Personal Information">
-            <label for="personalInfo">Información Personal</label><br>
-
-            <input type="checkbox" id="jobInfo" value="Job Information">
-            <label for="jobInfo">Información del Trabajo</label><br>
-
-            <input type="checkbox" id="compensationInfo" value="Compensation Information">
-            <label for="compensationInfo">Información de Compensación</label><br>
-
-            <input type="checkbox" id="addressInfo" value="Address Information">
-            <label for="addressInfo">Información de Dirección</label><br>
-
-            <input type="checkbox" id="employmentInfo" value="Employment Information">
-            <label for="employmentInfo">Información de Empleo</label><br>
-
-            <input type="checkbox" id="paymentInfo" value="Payment Information">
-            <label for="paymentInfo">Información de Pago</label><br>
-
-            <input type="checkbox" id="dependentsInfo" value="Dependents">
-            <label for="dependentsInfo">Dependientes</label><br>
-
-            <input type="checkbox" id="nationalIdInfo" value="National ID Information">
-            <label for="nationalIdInfo">Identificación Nacional</label><br>
-
-            <input type="checkbox" id="globalAssignmentInfo" value="Global Assignment Information">
-            <label for="globalAssignmentInfo">Asignaciones Globales</label><br>
-
-            <input type="checkbox" id="workPermitInfo" value="Work Permit Information">
-            <label for="workPermitInfo">Permisos de Trabajo</label><br>
-
-            <input type="checkbox" id="timeOffInfo" value="Time Off">
-            <label for="timeOffInfo">Vacaciones/Permisos</label><br>
-
-            <input type="checkbox" id="jobRelationshipsInfo" value="Job Relationships">
-            <label for="jobRelationshipsInfo">Relaciones Laborales</label><br>
-
-            <input type="checkbox" id="emergencyContactsInfo" value="Emergency Contacts">
-            <label for="emergencyContactsInfo">Contactos de Emergencia</label><br>
-        </div>
+    <!-- Contenedor del logo -->
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo" class="logo-image">
     </div>
 
-    <!-- Sección de clonador de legajos a la derecha -->
-    <div class="container">
-        <div class="title-box">
-            <h1>Clonador de legajos</h1>
+    <div class="main-container">
+        <!-- Sección de portlets -->
+        <div class="portlets">
+            <div class="title-box">
+                <h2>Seleccione los portlets a clonar</h2>
+            </div>
+
+            <!-- Botones para seleccionar/deseleccionar todos -->
+            <div class="select-buttons">
+                <button onclick="selectAllPortlets()">Seleccionar todos</button>
+                <button onclick="deselectAllPortlets()">Deseleccionar todos</button>
+            </div>
+
+            <div class="portlet-grid">
+                <!-- Lista de portlets -->
+                <div>
+                    <input type="checkbox" id="personalInfo" value="Personal Information">
+                    <label for="personalInfo">Información Personal</label>
+                </div>
+                <!-- ... (los demás portlets) ... -->
+                <div>
+                    <input type="checkbox" id="jobInfo" value="Job Information">
+                    <label for="jobInfo">Información del Trabajo</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="compensationInfo" value="Compensation Information">
+                    <label for="compensationInfo">Información de Compensación</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="addressInfo" value="Address Information">
+                    <label for="addressInfo">Información de Dirección</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="employmentInfo" value="Employment Information">
+                    <label for="employmentInfo">Información de Empleo</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="paymentInfo" value="Payment Information">
+                    <label for="paymentInfo">Información de Pago</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="dependentsInfo" value="Dependents">
+                    <label for="dependentsInfo">Dependientes</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="nationalIdInfo" value="National ID Information">
+                    <label for="nationalIdInfo">Identificación Nacional</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="globalAssignmentInfo" value="Global Assignment Information">
+                    <label for="globalAssignmentInfo">Asignaciones Globales</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="workPermitInfo" value="Work Permit Information">
+                    <label for="workPermitInfo">Permisos de Trabajo</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="timeOffInfo" value="Time Off">
+                    <label for="timeOffInfo">Vacaciones/Permisos</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="jobRelationshipsInfo" value="Job Relationships">
+                    <label for="jobRelationshipsInfo">Relaciones Laborales</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="emergencyContactsInfo" value="Emergency Contacts">
+                    <label for="emergencyContactsInfo">Contactos de Emergencia</label>
+                </div>
+            </div>
         </div>
 
-        <label for="produccion">Ambiente Origen (Producción):</label>
-        <input type="text" id="produccion" placeholder="URL API Producción" value="https://api.production.com/odata/v2/Employee">
+        <!-- Sección de clonador de legajos -->
+        <div class="container">
+            <div class="title-box">
+                <h1>Clonador de legajos</h1>
+            </div>
 
-        <label for="preview">Ambiente Destino (Preview):</label>
-        <input type="text" id="preview" placeholder="URL API Preview" value="https://api.preview.com/odata/v2/Employee">
+            <div id="connectionSection">
+                <label for="produccion">Ambiente Origen (Producción):</label>
+                <input type="text" id="produccion" placeholder="URL API Producción" value="https://api.production.com/odata/v2/Employee">
 
-        <label for="employeeId">ID de empleado a clonar:</label>
-        <input type="text" id="employeeId" placeholder="Ingrese el ID de empleado">
+                <label for="produccionToken">Token de Producción:</label>
+                <input type="password" id="produccionToken" placeholder="Ingrese su token de Producción">
 
-        <button onclick="cloneEmployee()">Clonar Empleado</button>
-        <button onclick="showLog()">Revisar log</button>
+                <label for="preview">Ambiente Destino (Preview):</label>
+                <input type="text" id="preview" placeholder="URL API Preview" value="https://api.preview.com/odata/v2/Employee">
 
-        <div id="status" class="status"></div>
+                <label for="previewToken">Token de Preview:</label>
+                <input type="password" id="previewToken" placeholder="Ingrese su token de Preview">
+
+                <button onclick="saveConnection()">Guardar Conexión</button>
+            </div>
+
+            <div id="mainSection" style="display: none;">
+                <button onclick="reviewConnection()">Revisar Conexión</button>
+
+                <label for="employeeId">ID de empleado a clonar:</label>
+                <input type="text" id="employeeId" placeholder="Ingrese el ID de empleado">
+
+                <button onclick="cloneEmployee()">Clonar Empleado</button>
+                <button onclick="showLog()">Revisar log</button>
+
+                <!-- Indicador de progreso -->
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div id="status" class="status"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Sección del log -->
     <div id="logSection" class="log-section">
         <div class="log-title">Log detallado</div>
+        <pre id="logContent"></pre>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         let log = [];  // Variable para almacenar los registros del log
+        let connectionData = {}; // Objeto para almacenar URLs y tokens
+
+        // Función para seleccionar todos los portlets
+        function selectAllPortlets() {
+            const portletElements = document.querySelectorAll('.portlets input[type="checkbox"]');
+            portletElements.forEach(element => {
+                element.checked = true;
+            });
+        }
+
+        // Función para deseleccionar todos los portlets
+        function deselectAllPortlets() {
+            const portletElements = document.querySelectorAll('.portlets input[type="checkbox"]');
+            portletElements.forEach(element => {
+                element.checked = false;
+            });
+        }
+
+        // Función para mostrar el log y desplazar la página hacia él
+        function showLog() {
+            const logSection = document.getElementById('logSection');
+            const logContent = document.getElementById('logContent');
+            logContent.textContent = log.join('\n'); // Mostrar el log en la sección de log
+            logSection.style.display = 'block'; // Mostrar el recuadro del log
+            logSection.scrollIntoView({ behavior: 'smooth' }); // Desplazar hacia el log
+        }
+
+        // Función para actualizar el progreso
+        function updateProgress(percent) {
+            const progress = document.getElementById('progress');
+            progress.style.width = percent + '%';
+        }
+
+        // Función para guardar la conexión
+        function saveConnection() {
+            const produccionUrl = document.getElementById('produccion').value;
+            const produccionToken = document.getElementById('produccionToken').value;
+            const previewUrl = document.getElementById('preview').value;
+            const previewToken = document.getElementById('previewToken').value;
+
+            // Validaciones
+            if (!produccionUrl || !produccionToken || !previewUrl || !previewToken) {
+                alert('Por favor, complete todos los campos de conexión.');
+                return;
+            }
+
+            // Guardar datos
+            connectionData = {
+                produccionUrl,
+                produccionToken,
+                previewUrl,
+                previewToken
+            };
+
+            // Ocultar sección de conexión y mostrar sección principal
+            document.getElementById('connectionSection').style.display = 'none';
+            document.getElementById('mainSection').style.display = 'block';
+
+            alert('Conexión guardada exitosamente.');
+        }
+
+        // Función para revisar la conexión (volver a mostrar los campos)
+        function reviewConnection() {
+            // Mostrar sección de conexión y ocultar sección principal
+            document.getElementById('connectionSection').style.display = 'block';
+            document.getElementById('mainSection').style.display = 'none';
+
+            // Rellenar los campos con los datos actuales
+            document.getElementById('produccion').value = connectionData.produccionUrl || '';
+            document.getElementById('produccionToken').value = connectionData.produccionToken || '';
+            document.getElementById('preview').value = connectionData.previewUrl || '';
+            document.getElementById('previewToken').value = connectionData.previewToken || '';
+        }
 
         // Función para clonar el empleado
         async function cloneEmployee() {
-            const produccionUrl = document.getElementById('produccion').value;
-            const previewUrl = document.getElementById('preview').value;
             const employeeId = document.getElementById('employeeId').value;
             const statusDiv = document.getElementById('status');
 
             log = []; // Reiniciar el log en cada ejecución
             log.push('Iniciando el proceso de clonación...');
 
+            // Validaciones iniciales
             if (!employeeId) {
                 log.push('Error: ID de empleado no proporcionado.');
                 statusDiv.innerHTML = "Por favor, ingrese un ID de empleado.";
                 statusDiv.className = 'status error';
                 log.push('Sugerencia: Asegúrese de ingresar un ID de empleado válido antes de clonar.');
+                showLog();
+                return;
+            }
+
+            if (!connectionData.produccionUrl || !connectionData.produccionToken || !connectionData.previewUrl || !connectionData.previewToken) {
+                log.push('Error: Datos de conexión incompletos.');
+                statusDiv.innerHTML = "Por favor, configure la conexión antes de clonar.";
+                statusDiv.className = 'status error';
+                log.push('Sugerencia: Haga clic en "Revisar Conexión" para ingresar los datos.');
+                showLog();
                 return;
             }
 
@@ -241,120 +424,93 @@
 
             // Obtener los portlets seleccionados
             const selectedPortlets = [];
-            if (document.getElementById('personalInfo').checked) {
-                selectedPortlets.push('Personal Information');
-                log.push('Portlet seleccionado: Información Personal');
-            }
-            if (document.getElementById('jobInfo').checked) {
-                selectedPortlets.push('Job Information');
-                log.push('Portlet seleccionado: Información del Trabajo');
-            }
-            if (document.getElementById('compensationInfo').checked) {
-                selectedPortlets.push('Compensation Information');
-                log.push('Portlet seleccionado: Información de Compensación');
-            }
-            if (document.getElementById('addressInfo').checked) {
-                selectedPortlets.push('Address Information');
-                log.push('Portlet seleccionado: Información de Dirección');
-            }
-            if (document.getElementById('employmentInfo').checked) {
-                selectedPortlets.push('Employment Information');
-                log.push('Portlet seleccionado: Información de Empleo');
-            }
-            if (document.getElementById('paymentInfo').checked) {
-                selectedPortlets.push('Payment Information');
-                log.push('Portlet seleccionado: Información de Pago');
-            }
-            if (document.getElementById('dependentsInfo').checked) {
-                selectedPortlets.push('Dependents');
-                log.push('Portlet seleccionado: Dependientes');
-            }
-            if (document.getElementById('nationalIdInfo').checked) {
-                selectedPortlets.push('National ID Information');
-                log.push('Portlet seleccionado: Identificación Nacional');
-            }
-            if (document.getElementById('globalAssignmentInfo').checked) {
-                selectedPortlets.push('Global Assignment Information');
-                log.push('Portlet seleccionado: Asignaciones Globales');
-            }
-            if (document.getElementById('workPermitInfo').checked) {
-                selectedPortlets.push('Work Permit Information');
-                log.push('Portlet seleccionado: Permisos de Trabajo');
-            }
-            if (document.getElementById('timeOffInfo').checked) {
-                selectedPortlets.push('Time Off');
-                log.push('Portlet seleccionado: Vacaciones/Permisos');
-            }
-            if (document.getElementById('jobRelationshipsInfo').checked) {
-                selectedPortlets.push('Job Relationships');
-                log.push('Portlet seleccionado: Relaciones Laborales');
-            }
-            if (document.getElementById('emergencyContactsInfo').checked) {
-                selectedPortlets.push('Emergency Contacts');
-                log.push('Portlet seleccionado: Contactos de Emergencia');
-            }
+            const portletElements = document.querySelectorAll('.portlets input[type="checkbox"]');
+            portletElements.forEach(element => {
+                if (element.checked) {
+                    selectedPortlets.push(element.value);
+                    log.push(`Portlet seleccionado: ${element.nextElementSibling.textContent}`);
+                }
+            });
 
             if (selectedPortlets.length === 0) {
                 log.push('Error: No se seleccionaron portlets.');
                 statusDiv.innerHTML = "Por favor, seleccione al menos un portlet a clonar.";
                 statusDiv.className = 'status error';
                 log.push('Sugerencia: Marque al menos un portlet antes de clonar.');
+                showLog();
                 return;
             }
 
             try {
+                updateProgress(10);
                 log.push('Obteniendo datos del empleado desde Producción...');
-                const produccionResponse = await fetch(`${produccionUrl}('${employeeId}')`, {
-                    method: 'GET',
+
+                // Usando Axios para manejar mejor las solicitudes y compatibilidad
+                const produccionResponse = await axios.get(`${connectionData.produccionUrl}('${employeeId}')`, {
                     headers: {
-                        'Authorization': 'Bearer YOUR_PRODUCTION_API_TOKEN',
+                        'Authorization': `Bearer ${connectionData.produccionToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
 
-                if (!produccionResponse.ok) {
-                    throw new Error('Error obteniendo datos del empleado de Producción');
+                updateProgress(30);
+
+                if (!produccionResponse.data) {
+                    throw new Error('No se encontraron datos del empleado en Producción');
                 }
 
-                const employeeData = await produccionResponse.json();
+                const employeeData = produccionResponse.data;
                 log.push('Datos del empleado obtenidos correctamente.');
 
                 // Filtrar datos según los portlets seleccionados
                 const filteredData = {};
                 selectedPortlets.forEach(portlet => {
-                    filteredData[portlet] = employeeData[portlet];
+                    if (employeeData[portlet]) {
+                        filteredData[portlet] = employeeData[portlet];
+                        log.push(`Datos del portlet '${portlet}' agregados para clonación.`);
+                    } else {
+                        log.push(`Advertencia: El portlet '${portlet}' no está disponible para este empleado.`);
+                    }
                 });
+
+                if (Object.keys(filteredData).length === 0) {
+                    throw new Error('No hay datos disponibles para los portlets seleccionados.');
+                }
+
+                updateProgress(50);
 
                 log.push('Enviando datos del empleado a Preview...');
-                const previewResponse = await fetch(previewUrl, {
-                    method: 'POST',
+                const previewResponse = await axios.post(connectionData.previewUrl, filteredData, {
                     headers: {
-                        'Authorization': 'Bearer YOUR_PREVIEW_API_TOKEN',
+                        'Authorization': `Bearer ${connectionData.previewToken}`,
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(filteredData)
+                    }
                 });
 
-                if (!previewResponse.ok) {
+                updateProgress(80);
+
+                if (previewResponse.status !== 201 && previewResponse.status !== 200) {
                     throw new Error('Error creando empleado en Preview');
                 }
+
+                updateProgress(100);
 
                 statusDiv.innerHTML = `Empleado ${employeeId} clonado exitosamente con los portlets seleccionados.`;
                 statusDiv.className = 'status success';
                 log.push('Empleado clonado exitosamente en Preview.');
+
+                // Proporcionar más información al usuario
+                log.push('Proceso completado. Puede verificar el empleado clonado en el ambiente de Preview.');
+
             } catch (error) {
                 statusDiv.innerHTML = `Error: ${error.message}`;
                 statusDiv.className = 'status error';
                 log.push(`Error durante la clonación: ${error.message}`);
-                log.push('Posible solución: Verifique que las URLs de Producción y Preview sean correctas y que los tokens de autenticación sean válidos.');
+                log.push('Posible solución: Verifique que las URLs y tokens sean correctos.');
+            } finally {
+                showLog();
+                updateProgress(0); // Reiniciar la barra de progreso
             }
-        }
-
-        // Función para mostrar el log
-        function showLog() {
-            const logSection = document.getElementById('logSection');
-            logSection.innerHTML += log.join('\n'); // Mostrar el log en la sección de log
-            logSection.style.display = 'block'; // Mostrar el recuadro del log
         }
     </script>
 </body>
