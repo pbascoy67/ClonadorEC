@@ -29,7 +29,7 @@
         .main-container {
             display: flex;
             flex-direction: row;
-            flex-wrap: wrap;
+            justify-content: space-between;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
@@ -48,6 +48,12 @@
         .container {
             display: flex;
             flex-direction: column;
+            width: 50%;
+        }
+        .portlets {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
         }
         /* Caja para títulos con borde dorado */
         .title-box {
@@ -85,12 +91,12 @@
             color: #cfcfcf;
         }
         button {
-            margin-top: 20px;
+            margin-top: 10px;
             width: 100%;
             padding: 12px;
             background-color: #f5d042; /* Dorado */
             color: #1a1a1a;
-            border: none;
+            border: 2px solid #000; /* Borde negro */
             border-radius: 8px;
             font-size: 1.1rem;
             cursor: pointer;
@@ -138,16 +144,36 @@
             margin: 5px;
             box-sizing: border-box;
         }
-        /* Botón para seleccionar/deseleccionar todos */
-        .select-buttons {
-            margin-top: 10px;
-            text-align: center;
+
+        /* Botones de selección debajo del título */
+        .portlet-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px; /* Separación de 2 espacios entre los botones */
+            margin-bottom: 20px;
         }
-        .select-buttons button {
-            width: auto;
-            margin: 5px;
-            padding: 10px 20px;
+
+        /* Estilo para la variante de portlets debajo */
+        .portlet-actions-outside {
+            padding: 15px;
+            background: #001f4d; /* Azul más oscuro */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid #f5d042; /* Borde dorado */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            width: 80%; /* Más pequeño que la caja de portlets */
+            margin-left: auto;
+            margin-right: auto;
         }
+
+        /* Ajuste al main-container para acomodar los cambios */
+        .main-container {
+            align-items: flex-start;
+        }
+
         /* Indicador de progreso */
         .progress-bar {
             width: 100%;
@@ -214,6 +240,10 @@
             .portlet-grid div {
                 width: calc(100% - 10px);
             }
+            .portlets, .portlet-actions-outside {
+                margin-right: 0;
+                margin-left: 0;
+            }
         }
         @media screen and (max-width: 500px) {
             .logo-image {
@@ -236,8 +266,8 @@
                 <h2>Seleccione los portlets a clonar</h2>
             </div>
 
-            <!-- Botones para seleccionar/deseleccionar todos -->
-            <div class="select-buttons">
+            <!-- Botones Seleccionar todos/Deseleccionar todos debajo del título -->
+            <div class="portlet-buttons">
                 <button onclick="selectAllPortlets()"><i class="fas fa-check-square"></i> Seleccionar todos</button>
                 <button onclick="deselectAllPortlets()"><i class="fas fa-square"></i> Deseleccionar todos</button>
             </div>
@@ -248,7 +278,6 @@
                     <input type="checkbox" id="personalInfo" value="Personal Information">
                     <label for="personalInfo">Información Personal</label>
                 </div>
-                <!-- ... (los demás portlets) ... -->
                 <div>
                     <input type="checkbox" id="jobInfo" value="Job Information">
                     <label for="jobInfo">Información del Trabajo</label>
@@ -298,9 +327,19 @@
                     <label for="emergencyContactsInfo">Contactos de Emergencia</label>
                 </div>
             </div>
+
+            <!-- Nueva sección para la variante de portlets debajo de la selección -->
+            <div class="portlet-actions-outside">
+                <label for="savedSelections">Variante de portlets:</label>
+                <select id="savedSelections" onchange="loadSelection()">
+                    <option value="">-- Seleccione una opción --</option>
+                </select>
+                <button onclick="saveSelection()"><i class="fas fa-save"></i> Guardar Selección</button>
+                <button onclick="deleteSelection()" style="background-color: #d9534f; color: #fff; margin-top: 10px;"><i class="fas fa-trash"></i> Eliminar Selección</button>
+            </div>
         </div>
 
-        <!-- Sección de clonador de legajos -->
+        <!-- Sección de clonador de legajos al lado derecho -->
         <div class="container">
             <div class="title-box">
                 <i class="fas fa-user-plus"></i>
@@ -551,6 +590,88 @@
                 updateProgress(0); // Reiniciar la barra de progreso
             }
         }
+
+        // Funciones para guardar y cargar selecciones de portlets
+
+        // Función para guardar la selección actual de portlets
+        function saveSelection() {
+            const portletElements = document.querySelectorAll('.portlets input[type="checkbox"]');
+            const selectedPortlets = [];
+            portletElements.forEach(element => {
+                if (element.checked) {
+                    selectedPortlets.push(element.id);
+                }
+            });
+
+            if (selectedPortlets.length === 0) {
+                alert('No hay portlets seleccionados para guardar.');
+                return;
+            }
+
+            const selectionName = prompt('Ingrese un nombre para esta selección:');
+            if (selectionName) {
+                let savedSelections = JSON.parse(localStorage.getItem('savedSelections')) || {};
+                savedSelections[selectionName] = selectedPortlets;
+                localStorage.setItem('savedSelections', JSON.stringify(savedSelections));
+                updateSelectionDropdown();
+                alert(`Selección "${selectionName}" guardada exitosamente.`);
+            }
+        }
+
+        // Función para cargar una selección guardada
+        function loadSelection() {
+            const selectionName = document.getElementById('savedSelections').value;
+            if (!selectionName) return;
+
+            let savedSelections = JSON.parse(localStorage.getItem('savedSelections')) || {};
+            const selectedPortlets = savedSelections[selectionName];
+
+            if (selectedPortlets) {
+                deselectAllPortlets();
+                selectedPortlets.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.checked = true;
+                    }
+                });
+                alert(`Selección "${selectionName}" cargada.`);
+            }
+        }
+
+        // Función para eliminar una selección guardada
+        function deleteSelection() {
+            const selectionName = document.getElementById('savedSelections').value;
+            if (!selectionName) {
+                alert('Seleccione una selección para eliminar.');
+                return;
+            }
+
+            if (confirm(`¿Está seguro de que desea eliminar la selección "${selectionName}"?`)) {
+                let savedSelections = JSON.parse(localStorage.getItem('savedSelections')) || {};
+                delete savedSelections[selectionName];
+                localStorage.setItem('savedSelections', JSON.stringify(savedSelections));
+                updateSelectionDropdown();
+                alert(`Selección "${selectionName}" eliminada.`);
+            }
+        }
+
+        // Función para actualizar el menú desplegable de selecciones guardadas
+        function updateSelectionDropdown() {
+            const select = document.getElementById('savedSelections');
+            select.innerHTML = '<option value="">-- Seleccione una opción --</option>';
+            let savedSelections = JSON.parse(localStorage.getItem('savedSelections')) || {};
+            for (let name in savedSelections) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            }
+        }
+
+        // Cargar las selecciones guardadas al cargar la página
+        window.onload = function() {
+            updateSelectionDropdown();
+        };
     </script>
 </body>
 </html>
