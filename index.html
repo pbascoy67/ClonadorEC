@@ -30,6 +30,18 @@
             min-height: 100vh;
         }
 
+        .sidebar-right {
+            width: 302px; /* Aproximadamente 8 cm */
+            padding: 10px;
+            background-color: #003366; /* Azul más claro */
+            border-left: 2px solid #DAA520; /* Borde dorado */
+            min-height: 100vh;
+            /* Ajustes para alinear el botón hacia arriba */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .sidebar h3 {
             font-size: 18px;
             color: #ffffff;
@@ -99,6 +111,7 @@
             padding: 10px;
             font-size: 16px;
             margin-top: 10px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -143,6 +156,14 @@
             #previewContainer iframe {
                 height: 300px;
             }
+            .wrapper {
+                flex-direction: column;
+            }
+            .sidebar, .sidebar-right {
+                width: 100%;
+                min-height: auto;
+                border: none;
+            }
         }
     </style>
     <!-- Librerías necesarias -->
@@ -152,10 +173,13 @@
 </head>
 <body>
     <div class="wrapper">
+        <!-- Barra lateral izquierda -->
         <div class="sidebar">
             <h3>Archivos Firmados:</h3>
             <ul id="signedFilesList"></ul>
         </div>
+
+        <!-- Contenido principal -->
         <div class="container">
             <h2>Firma de Documentos</h2>
             
@@ -168,7 +192,6 @@
             <!-- Canvas para la firma -->
             <h3>Dibuja tu firma:</h3>
             <div class="signature-pad">
-                <!-- Aumentamos el tamaño del canvas -->
                 <canvas id="canvasFirma" width="400" height="150" aria-label="Área para dibujar la firma"></canvas>
             </div>
             <button id="clearCanvas" aria-label="Limpiar Firma">Limpiar Firma</button>
@@ -217,6 +240,13 @@
                 <iframe id="pdfPreview" aria-label="Vista Previa del Documento"></iframe>
                 <button id="downloadButton" aria-label="Descargar Documento Firmado">Descargar Documento Firmado</button>
             </div>
+        </div>
+
+        <!-- Barra lateral derecha con el botón "Borrar Datos" -->
+        <div class="sidebar-right">
+            <!-- Mover el botón hacia arriba -->
+            <h3>&nbsp;</h3> <!-- Espacio para alinear verticalmente -->
+            <button id="borrarDatos" aria-label="Borrar Datos">Borrar Datos</button>
         </div>
     </div>
     
@@ -525,35 +555,86 @@
                 document.getElementById('previewContainer').style.display = 'block';
                 document.getElementById('progressBarContainer').style.display = 'none';
 
-                // Evento para el botón de descarga
-                const downloadButton = document.getElementById('downloadButton');
-                // Remover cualquier evento previo
-                downloadButton.replaceWith(downloadButton.cloneNode(true));
-                document.getElementById('downloadButton').addEventListener('click', function() {
-                    // Obtener el nombre del archivo original y concatenar el nombre y apellido sin espacios
-                    const originalFileName = file.name.replace('.pdf', '');
-                    const finalFileName = `${originalFileName}_${nombreApellido.replace(/\s+/g, '')}.pdf`;
+                // Cambiar color del botón "Procesar Documento" a verde claro
+                const procesarButton = document.getElementById('procesarDocumento');
+                procesarButton.style.backgroundColor = '#90EE90'; // Verde claro
+                procesarButton.textContent = 'Documento Procesado';
 
-                    // Descargar el PDF con el nombre concatenado
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = finalFileName; // Nombre del archivo
-                    link.click();
-
-                    // Añadir el nombre del archivo a la lista en la barra lateral con numeración
-                    const signedFilesList = document.getElementById('signedFilesList');
-                    const listItem = document.createElement('li');
-                    fileCount += 1; // Incrementar el contador
-                    listItem.textContent = `${fileCount}. ${finalFileName}`;
-                    signedFilesList.appendChild(listItem);
-
-                    // *** Nuevo código para desplazarse hacia arriba ***
-                    // Desplazar la página hacia la sección de archivos firmados
-                    signedFilesList.parentElement.scrollIntoView({ behavior: 'smooth' });
-                });
+                // Restaurar color después de unos segundos si lo deseas
+                setTimeout(() => {
+                    procesarButton.style.backgroundColor = '#DAA520'; // Dorado original
+                    procesarButton.textContent = 'Procesar Documento';
+                }, 3000);
             };
 
             reader.readAsArrayBuffer(file);
+        });
+
+        // Evento para el botón de descarga
+        const downloadButton = document.getElementById('downloadButton');
+        downloadButton.addEventListener('click', function() {
+            // Obtener el nombre del archivo original y concatenar el nombre y apellido sin espacios
+            const fileInput = document.getElementById('documento');
+            const nombreApellido = nombreApellidoInput.value.trim();
+            const file = fileInput.files[0];
+            const originalFileName = file.name.replace('.pdf', '');
+            const finalFileName = `${originalFileName}_${nombreApellido.replace(/\s+/g, '')}.pdf`;
+
+            // Descargar el PDF con el nombre concatenado
+            const blobUrl = document.getElementById('pdfPreview').src;
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = finalFileName; // Nombre del archivo
+            link.click();
+
+            // Añadir el nombre del archivo a la lista en la barra lateral con numeración
+            const signedFilesList = document.getElementById('signedFilesList');
+            const listItem = document.createElement('li');
+            fileCount += 1; // Incrementar el contador
+            listItem.textContent = `${fileCount}. ${finalFileName}`;
+            signedFilesList.appendChild(listItem);
+
+            // Cambiar color del botón "Descargar Documento Firmado" a verde claro
+            downloadButton.style.backgroundColor = '#90EE90'; // Verde claro
+            downloadButton.textContent = 'Descarga Exitosa';
+
+            // Esperar 3 segundos antes de desplazarse hacia arriba
+            setTimeout(() => {
+                // Desplazar la página hacia la sección de archivos firmados
+                signedFilesList.parentElement.scrollIntoView({ behavior: 'smooth' });
+
+                // Restaurar color y texto del botón
+                downloadButton.style.backgroundColor = '#DAA520'; // Dorado original
+                downloadButton.textContent = 'Descargar Documento Firmado';
+            }, 3000);
+        });
+
+        // Evento para el botón "Borrar Datos"
+        document.getElementById('borrarDatos').addEventListener('click', function() {
+            // Confirmación antes de borrar
+            if (confirm('¿Estás seguro de que deseas borrar todos los datos?')) {
+                // Limpiar campos de texto
+                document.getElementById('documento').value = '';
+                nombreApellidoInput.value = '';
+                document.getElementById('nombreEmpresa').value = '';
+                document.getElementById('nombrePuesto').value = '';
+                document.getElementById('fecha').value = getTodayDate();
+
+                // Limpiar el canvas de la firma
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Limpiar la lista de archivos firmados
+                const signedFilesList = document.getElementById('signedFilesList');
+                signedFilesList.innerHTML = '';
+                fileCount = 0; // Reiniciar el contador
+
+                // Ocultar la vista previa y barra de progreso
+                document.getElementById('previewContainer').style.display = 'none';
+                document.getElementById('progressBarContainer').style.display = 'none';
+
+                // Desplazar la página hacia arriba
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
     </script>
 </body>
